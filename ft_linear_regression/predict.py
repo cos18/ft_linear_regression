@@ -2,7 +2,7 @@ import sys
 from ft_linear_regression.util import get_theta, calc_predict
 
 def run():
-  sys.tracebacklimit = 0
+  # sys.tracebacklimit = 0
 
   mileage = 0
   while True:
@@ -14,11 +14,11 @@ def run():
       continue
     except OSError as e:
       print(e)
-
-    try:
-      print('Estimate price : {}'.format(calc_predict(mileage)))
-      print('Using theta : {}'.format(get_theta()))
-    except OSError as e:
-      print(e)
-      
     break
+
+  try:
+    theta = get_theta()
+    print('Estimate price : {}'.format(calc_predict(theta, mileage)))
+    print('Using theta : {}'.format(theta))
+  except Exception as e:
+    print(e)
