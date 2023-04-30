@@ -2,7 +2,7 @@ import sys
 from ft_linear_regression.util import get_theta, calc_predict
 
 def run():
-  # sys.tracebacklimit = 0
+  sys.tracebacklimit = 0
 
   mileage = 0
   while True:

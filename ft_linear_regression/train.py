@@ -53,7 +53,7 @@ def print_menu():
   print('e: Exit the program\n')
 
 def run():
-  # sys.tracebacklimit = 0
+  sys.tracebacklimit = 0
 
   print_menu()
 
