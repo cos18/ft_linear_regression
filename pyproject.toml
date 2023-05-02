@@ -7,7 +7,7 @@ readme = "README.md"
 packages = [{include = "ft_linear_regression"}]
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.10"
 matplotlib = "^3.7.1"
 
 
