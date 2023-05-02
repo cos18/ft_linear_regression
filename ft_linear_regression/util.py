@@ -42,3 +42,6 @@ def reset_theta():
 
 def calc_predict(theta: List[float], mileage: float) -> float:
   return theta[0] + theta[1] * mileage
+
+def calc_mse(theta: List[float], data: List[List[float]]) -> float:
+  return sum([(d[1] - calc_predict(theta, d[0])) ** 2 / len(data) for d in data])
