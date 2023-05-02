@@ -1,23 +1,24 @@
 import sys
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 
 from ft_linear_regression.plot import plot_line
-from ft_linear_regression.util.file import get_theta, get_data, reset_theta, set_theta
-from ft_linear_regression.util.calc import calc_gradient, calc_mse
+from ft_linear_regression.util.file import get_model_info, get_data, reset_model_info, set_model_info
+from ft_linear_regression.util.calc import calc_gradient, calc_mse, calc_array_norm
 
 
 def train():
-    theta = get_theta()
+    model_info = get_model_info()
     x_km, y_price = get_data()
-    print(x_km, y_price)
-    lr = 0.000000001
-    mse = calc_mse(theta, x_km, y_price)
+    model_info[2] = x_km.mean()
+    model_info[3] = x_km.std()
+    mse = calc_mse(model_info, x_km, y_price)
+    lr = 0.01
 
     plt.ion()
     fig, ax = plt.subplots()
+    line = None
     ax.plot(x_km, y_price, 'o', color='tab:brown')
-    line = plot_line(ax, x_km, theta)
 
     ax.set_xlabel('km')
     ax.set_ylabel('price')
@@ -28,7 +29,7 @@ def train():
     while True:
         try:
             print('\nType learning rate using at gradient descent algorithm')
-            print('default value is 0.000001')
+            print('default value is 0.01')
             print('If lr is too high, program will cancel training\n')
             print('> ', end='')
             lr_input = input()
@@ -40,37 +41,40 @@ def train():
             continue
         break
 
-    for times in range(1, 10001):
-        gradient = calc_gradient(theta, x_km, y_price)
-        print(gradient)
-        update_theta = theta - lr * gradient
-        update_mse = calc_mse(update_theta, x_km, y_price)
+    for times in range(1, 1001):
+        gradient = calc_gradient(model_info, x_km, y_price)
+        update_model_info = np.concatenate([model_info[0:2] - lr * gradient, model_info[2:4]], axis=None)
+        update_mse = calc_mse(update_model_info, x_km, y_price)
 
         if update_mse > mse:
             print("Learning Rate is TOO HIGH!!!")
             print("Canceling Training...")
             plt.close(fig)
             return
+        elif mse - update_mse < 0.000001:
+            print('Train is enough to run more...')
+            print('Finishing Training...\n')
+            break
 
-        theta = update_theta
+        model_info = update_model_info
         mse = update_mse
-        if times % 1000 == 0:
-            line = plot_line(ax, x_km, theta, line)
+        if times % 100 == 0:
+            line = plot_line(ax, x_km, model_info, line)
             fig.canvas.draw()
             fig.canvas.flush_events()
 
-            print("{}th try theta : {}".format(times, theta))
-            input()
+            print("{}th try theta : {} / MSE : {}".format(times, model_info[0:2], mse))
+            input("Press enter to continue...")
 
-    set_theta(theta)
-    plot_line(ax, x_km, theta, line)
+    set_model_info(model_info)
+    plot_line(ax, x_km, model_info, line)
     fig.canvas.draw()
     fig.canvas.flush_events()
     print("Train complete!!")
 
-    print("MSE of train theta {} is {}".format(theta, mse))
-    input()
-    plt.close(fig)
+    print("MSE of train theta {} is {}".format(model_info[0:2], mse))
+    input("Press enter to continue...")
+    plt.close('all')
 
 
 def print_menu():
@@ -95,7 +99,7 @@ def run():
             train()
             continue
         if menu == 'r':
-            reset_theta()
+            reset_model_info()
             print('Reset theta complete!\n')
             continue
         if menu == 'm':

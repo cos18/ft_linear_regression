@@ -23,25 +23,29 @@ def get_data() -> Tuple[ndarray, ndarray]:
         raise OSError('Error when opening data file!')
 
 
-def get_theta() -> ndarray:
+def get_model_info() -> ndarray:
+    """
+    get model info from `data/model_info`
+    :return: np.array [theta0, theta1, x_mean, x_std]
+    """
     try:
-        with open('ft_linear_regression/data/theta', 'r') as theta_file:
+        with open('ft_linear_regression/data/model_info', 'r') as theta_file:
             theta_org = theta_file.readline().split(',')
             try:
                 return np.array(list(map(float, theta_org)))
             except ValueError:
-                raise ValueError('Error while parsing theta!')
+                raise ValueError('Error while parsing model info!')
     except OSError:
-        raise OSError('Error when opening theta file!')
+        raise OSError('Error when opening model info file!')
 
 
-def set_theta(theta: ndarray):
+def set_model_info(model_info: ndarray):
     try:
-        with open('ft_linear_regression/data/theta', 'w') as theta_file:
-            theta_file.write(','.join(np.char.mod('%f', theta)))
+        with open('ft_linear_regression/data/model_info', 'w') as theta_file:
+            theta_file.write(','.join(np.char.mod('%f', model_info)))
     except OSError:
-        raise OSError('Error when writing theta file!')
+        raise OSError('Error when writing model info file!')
 
 
-def reset_theta():
-    set_theta(np.zeros(2))
+def reset_model_info():
+    set_model_info(np.concatenate([np.zeros(3), [1]], axis=None))

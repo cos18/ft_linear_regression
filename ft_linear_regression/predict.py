@@ -1,5 +1,5 @@
 import sys
-from ft_linear_regression.util.file import get_theta
+from ft_linear_regression.util.file import get_model_info
 from ft_linear_regression.util.calc import calc_predict
 
 
@@ -19,8 +19,8 @@ def run():
         break
 
     try:
-        theta = get_theta()
-        print('Estimate price : {}'.format(calc_predict(theta, mileage)))
-        print('Using theta : {}'.format(theta))
+        model_info = get_model_info()
+        print('Estimate price : {}'.format(calc_predict(model_info, mileage)))
+        print('Using theta : {}'.format(model_info[0:2]))
     except Exception as e:
         print(e)
