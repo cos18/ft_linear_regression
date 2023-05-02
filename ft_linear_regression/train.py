@@ -13,7 +13,7 @@ def train():
     model_info[2] = x_km.mean()
     model_info[3] = x_km.std()
     mse = calc_mse(model_info, x_km, y_price)
-    lr = 0.01
+    lr = 0.007
 
     plt.ion()
     fig, ax = plt.subplots()
@@ -26,32 +26,12 @@ def train():
     fig.canvas.draw()
     fig.canvas.flush_events()
 
-    while True:
-        try:
-            print('\nType learning rate using at gradient descent algorithm')
-            print('default value is 0.01')
-            print('If lr is too high, program will cancel training\n')
-            print('> ', end='')
-            lr_input = input()
-            if lr_input == '':
-                break
-            lr = float(lr_input)
-        except ValueError:
-            print('You need to input numbers!')
-            continue
-        break
-
     for times in range(1, 1001):
         gradient = calc_gradient(model_info, x_km, y_price)
         update_model_info = np.concatenate([model_info[0:2] - lr * gradient, model_info[2:4]], axis=None)
         update_mse = calc_mse(update_model_info, x_km, y_price)
 
-        if update_mse > mse:
-            print("Learning Rate is TOO HIGH!!!")
-            print("Canceling Training...")
-            plt.close(fig)
-            return
-        elif mse - update_mse < 0.000001:
+        if mse - update_mse < 0.000001:
             print('Train is enough to run more...')
             print('Finishing Training...\n')
             break
