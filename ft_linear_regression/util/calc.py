@@ -1,18 +1,20 @@
-from typing import List
+import numpy as np
+from numpy import ndarray
 
 
-def calc_predict(theta: List[float], mileage: float) -> float:
+def calc_predict(theta: ndarray, mileage: float) -> float:
     return theta[0] + theta[1] * mileage
 
 
-def calc_gradient(theta: List[float], data: List[List[float]], lr: float) -> List[float]:
-    result = [0, 0]
-    for d in data:
-        diff = (calc_predict(theta, d[0]) - d[1]) * lr / len(data)
-        result[0] += diff
-        result[1] += (diff * d[0])
-    return result
+def calc_error_array(theta: ndarray, x_km: ndarray, y_price: ndarray) -> ndarray:
+    y_predict = theta[0] + theta[1] * x_km
+    return y_predict - y_price
 
 
-def calc_mse(theta: List[float], data: List[List[float]]) -> float:
-    return sum([(d[1] - calc_predict(theta, d[0])) ** 2 / len(data) for d in data])
+def calc_gradient(theta: ndarray, x_km: ndarray, y_price: ndarray) -> ndarray:
+    y_error = calc_error_array(theta, x_km, y_price)
+    return np.array([y_error.mean(), (y_error * x_km).mean()])
+
+
+def calc_mse(theta: ndarray, x_km: ndarray, y_price: ndarray) -> float:
+    return (calc_error_array(theta, x_km, y_price)**2).mean()

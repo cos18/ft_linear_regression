@@ -1,21 +1,23 @@
 import sys
+import numpy as np
 import matplotlib.pyplot as plt
 
-from ft_linear_regression.plot import plot_data, plot_line
+from ft_linear_regression.plot import plot_line
 from ft_linear_regression.util.file import get_theta, get_data, reset_theta, set_theta
 from ft_linear_regression.util.calc import calc_gradient, calc_mse
 
 
 def train():
     theta = get_theta()
-    data = get_data()
-    lr = 0.0000000001
-    mse = calc_mse(theta, data)
+    x_km, y_price = get_data()
+    print(x_km, y_price)
+    lr = 0.000000001
+    mse = calc_mse(theta, x_km, y_price)
 
     plt.ion()
     fig, ax = plt.subplots()
-    plot_data(ax, data)
-    line = plot_line(ax, data, theta)
+    ax.plot(x_km, y_price, 'o', color='tab:brown')
+    line = plot_line(ax, x_km, theta)
 
     ax.set_xlabel('km')
     ax.set_ylabel('price')
@@ -39,19 +41,21 @@ def train():
         break
 
     for times in range(1, 10001):
-        gradient = calc_gradient(theta, data, lr)
-        update_theta = [theta[i] - gradient[i] for i in range(2)]
-        update_mse = calc_mse(update_theta, data)
+        gradient = calc_gradient(theta, x_km, y_price)
+        print(gradient)
+        update_theta = theta - lr * gradient
+        update_mse = calc_mse(update_theta, x_km, y_price)
 
         if update_mse > mse:
             print("Learning Rate is TOO HIGH!!!")
-            print("Calceling Training...")
+            print("Canceling Training...")
+            plt.close(fig)
             return
 
         theta = update_theta
         mse = update_mse
         if times % 1000 == 0:
-            line = plot_line(ax, data, theta, line)
+            line = plot_line(ax, x_km, theta, line)
             fig.canvas.draw()
             fig.canvas.flush_events()
 
@@ -59,7 +63,9 @@ def train():
             input()
 
     set_theta(theta)
-    plot_line(ax, data, theta, line)
+    plot_line(ax, x_km, theta, line)
+    fig.canvas.draw()
+    fig.canvas.flush_events()
     print("Train complete!!")
 
     print("MSE of train theta {} is {}".format(theta, mse))
