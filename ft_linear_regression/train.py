@@ -1,7 +1,6 @@
-from typing import List
 import sys
-import copy
-from ft_linear_regression.util import get_theta, get_data, reset_theta, calc_predict, calc_gradient, calc_mse, set_theta
+from ft_linear_regression.util.file import get_theta, get_data, reset_theta, set_theta
+from ft_linear_regression.util.calc import calc_gradient, calc_mse
 
 def train():
   lr = 0.000001
@@ -25,7 +24,7 @@ def train():
   mse = calc_mse(theta, data)
 
   for times in range(1, 10001):
-    gradient = calc_gradient(data, lr)
+    gradient = calc_gradient(theta, data, lr)
     update_theta = [ theta[i] - lr * gradient[i] / len(data) for i in range(2) ]
     update_mse = calc_mse(update_theta, data)
 

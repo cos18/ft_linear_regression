@@ -1,5 +1,6 @@
 import sys
-from ft_linear_regression.util import get_theta, calc_predict
+from ft_linear_regression.util.file import get_theta
+from ft_linear_regression.util.calc import calc_predict
 
 def run():
   sys.tracebacklimit = 0
